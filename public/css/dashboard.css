@@ -1,38 +1,33 @@
 .pipeline-container {
   display: flex;
-  gap: 15px;
+  gap: 16px;
   overflow-x: auto;
+  padding-bottom: 10px;
 }
 
-.pipeline-stage {
-  min-width: 220px;
+.pipeline-column {
+  min-width: 260px;
   background: #f8f9fa;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 10px;
 }
 
-.pipeline-stage h6 {
+.pipeline-column h6 {
   text-align: center;
-  font-weight: 600;
+  font-weight: bold;
   margin-bottom: 10px;
 }
 
 .lead-card {
-  background: white;
-  border-radius: 6px;
+  background: #fff;
+  border-radius: 8px;
   padding: 10px;
   margin-bottom: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
-.lead-card h6 {
-  font-size: 14px;
-  margin-bottom: 4px;
-}
-
 .lead-card small {
   display: block;
-  color: #555;
 }
 
 .lead-card select {
