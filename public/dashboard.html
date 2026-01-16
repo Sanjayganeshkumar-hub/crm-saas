@@ -235,98 +235,107 @@ input,select{
 
 </div>
 </div>
-
 <script>
+const token = localStorage.getItem("token");
+if (!token) window.location.href = "login.html";
+
 const socket = io();
-const stages=["Lead","Contacted","Qualified","Proposal","Won","Lost"];
+const stages = ["Lead","Contacted","Qualified","Proposal","Won","Lost"];
 
-function logout(){
-  localStorage.removeItem("token");
-  window.location.href="login.html";
-}
+async function loadLeads() {
+  const res = await fetch("/api/leads", {
+    headers: { Authorization: token }
+  });
+  const data = await res.json();
 
-function toggle(id){
-  const el=document.getElementById("d"+id);
-  el.style.display = el.style.display==="none" ? "block" : "none";
-}
-
-async function loadLeads(){
-  const res=await fetch("/api/leads");
-  const data=await res.json();
-  pipeline.innerHTML="";
-
+  pipeline.innerHTML = "";
   let total=0, won=0, loss=0;
 
-  stages.forEach(stage=>{
-    const col=document.createElement("div");
-    col.className="column";
-    col.innerHTML=`<h3>${stage}</h3>`;
+  stages.forEach(stage => {
+    const col = document.createElement("div");
+    col.className = "column";
+    col.innerHTML = `<h3>${stage}</h3>`;
 
-    data.filter(l=>l.stage===stage).forEach(l=>{
-      const v=Number(l.dealValue||0);
-      total+=v;
-      if(stage==="Won") won+=v;
-      if(stage==="Lost") loss+=v;
+    data.filter(l => l.stage === stage).forEach(l => {
+      const v = Number(l.dealValue || 0);
+      total += v;
+      if (stage==="Won") won+=v;
+      if (stage==="Lost") loss+=v;
 
-      col.innerHTML+=`
+      col.innerHTML += `
         <div class="lead">
-          <div class="lead-title">${l.companyName} — ₹${v}</div>
-          <button class="toggle" onclick="toggle('${l._id}')">View details</button>
-          <div class="details" id="d${l._id}">
-            👤 ${l.contactPerson}<br>
-            📧 ${l.email}<br>
-            📞 ${l.phone}
-          </div>
+          <b>${l.companyName} — ₹${v}</b><br>
+          <small>${l.contactPerson}</small><br>
+          <small>${l.email}</small><br>
+          <small>${l.phone}</small>
+
           <select onchange="moveLead('${l._id}',this.value)">
-            ${stages.map(s=>`<option ${s===l.stage?"selected":""}>${s}</option>`).join("")}
+            ${stages.map(s=>`<option ${s===l.stage?"selected":""}>${s}</option>`)}
           </select>
+
           <button class="delete-btn" onclick="deleteLead('${l._id}')">Delete</button>
-        </div>`;
+        </div>
+      `;
     });
 
     pipeline.appendChild(col);
   });
 
-  totalAmount.innerText=total;
-  totalWon.innerText=won;
-  totalLoss.innerText=loss;
+  totalAmount.innerText = total;
+  totalWon.innerText = won;
+  totalLoss.innerText = loss;
 }
 
-async function addLead(){
-  await fetch("/api/leads",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      companyName:company.value,
-      contactPerson:person.value,
-      email:email.value,
-      phone:phone.value,
-      dealValue:value.value
+async function addLead() {
+  await fetch("/api/leads", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token
+    },
+    body: JSON.stringify({
+      companyName: company.value,
+      contactPerson: person.value,
+      email: email.value,
+      phone: phone.value,
+      dealValue: value.value
     })
   });
 
-  company.value=person.value=email.value=phone.value=value.value="";
+  company.value = person.value = email.value = phone.value = value.value = "";
   socket.emit("leadChanged");
 }
 
-async function moveLead(id,stage){
-  await fetch("/api/leads/"+id,{
-    method:"PUT",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({stage})
+async function moveLead(id, stage) {
+  await fetch("/api/leads/" + id, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token
+    },
+    body: JSON.stringify({ stage })
   });
   socket.emit("leadChanged");
 }
 
-async function deleteLead(id){
-  if(!confirm("Delete this lead?")) return;
-  await fetch("/api/leads/"+id,{method:"DELETE"});
+async function deleteLead(id) {
+  if (!confirm("Delete this lead?")) return;
+  await fetch("/api/leads/" + id, {
+    method: "DELETE",
+    headers: { Authorization: token }
+  });
   socket.emit("leadChanged");
 }
 
-socket.on("refreshLeads",loadLeads);
+function logout() {
+  localStorage.removeItem("token");
+  window.location.href = "login.html";
+}
+
+socket.on("refreshLeads", loadLeads);
 loadLeads();
 </script>
+
 
 </body>
 </html>

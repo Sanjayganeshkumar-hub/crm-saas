@@ -1,34 +1,54 @@
 const express = require("express");
-const Lead = require("../models/lead");
 const router = express.Router();
+const Lead = require("../models/lead");
+const jwt = require("jsonwebtoken");
 
-// ADD LEAD
-router.post("/", async (req, res) => {
-  const lead = new Lead(req.body);
+/* AUTH MIDDLEWARE */
+function auth(req, res, next) {
+  const token = req.headers.authorization;
+  if (!token) return res.status(401).json({ msg: "No token" });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret");
+    req.user = decoded;
+    next();
+  } catch {
+    res.status(401).json({ msg: "Invalid token" });
+  }
+}
+
+/* GET ONLY LOGGED-IN USER LEADS */
+router.get("/", auth, async (req, res) => {
+  const leads = await Lead.find({ userId: req.user.id });
+  res.json(leads);
+});
+
+/* CREATE LEAD FOR LOGGED-IN USER */
+router.post("/", auth, async (req, res) => {
+  const lead = new Lead({
+    ...req.body,
+    userId: req.user.id
+  });
   await lead.save();
   res.json(lead);
 });
 
-// GET ALL LEADS
-router.get("/", async (req, res) => {
-  const leads = await Lead.find();
-  res.json(leads);
-});
-
-// UPDATE STAGE
-router.put("/:id", async (req, res) => {
-  const lead = await Lead.findByIdAndUpdate(
-    req.params.id,
-    { stage: req.body.stage },
-    { new: true }
+/* UPDATE LEAD (ONLY OWNER) */
+router.put("/:id", auth, async (req, res) => {
+  await Lead.findOneAndUpdate(
+    { _id: req.params.id, userId: req.user.id },
+    req.body
   );
-  res.json(lead);
+  res.json({ success: true });
 });
 
-// DELETE LEAD ✅
-router.delete("/:id", async (req, res) => {
-  await Lead.findByIdAndDelete(req.params.id);
-  res.json({ message: "Lead deleted" });
+/* DELETE LEAD (ONLY OWNER) */
+router.delete("/:id", auth, async (req, res) => {
+  await Lead.findOneAndDelete({
+    _id: req.params.id,
+    userId: req.user.id
+  });
+  res.json({ success: true });
 });
 
 module.exports = router;
