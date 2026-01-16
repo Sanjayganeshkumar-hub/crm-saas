@@ -1,56 +1,45 @@
 const express = require("express");
-const jwt = require("jsonwebtoken");
 const Lead = require("../models/lead");
+const authMiddleware = require("./middleware");
 
 const router = express.Router();
 
-// AUTH MIDDLEWARE
-function auth(req, res, next) {
-  const header = req.headers.authorization;
-  if (!header) return res.status(401).json({ msg: "No token" });
-
-  const token = header.split(" ")[1];
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret");
-    req.user = decoded;
-    next();
-  } catch {
-    res.status(401).json({ msg: "Invalid token" });
-  }
-}
-
-// Get user leads
-router.get("/", auth, async (req, res) => {
-  const leads = await Lead.find({ userId: req.user.userId });
+/* GET ONLY LOGGED-IN USER LEADS */
+router.get("/", authMiddleware, async (req, res) => {
+  const leads = await Lead.find({ userId: req.user.id });
   res.json(leads);
 });
 
-// Add lead
-router.post("/", auth, async (req, res) => {
-  const lead = await Lead.create({
+/* ADD NEW LEAD */
+router.post("/", authMiddleware, async (req, res) => {
+  const lead = new Lead({
     ...req.body,
-    userId: req.user.userId,
+    userId: req.user.id
   });
+
+  await lead.save();
   res.json(lead);
 });
 
-// Update stage
-router.put("/:id", auth, async (req, res) => {
-  await Lead.findOneAndUpdate(
-    { _id: req.params.id, userId: req.user.userId },
-    { stage: req.body.stage }
+/* UPDATE STAGE */
+router.put("/:id", authMiddleware, async (req, res) => {
+  const lead = await Lead.findOneAndUpdate(
+    { _id: req.params.id, userId: req.user.id },
+    { stage: req.body.stage },
+    { new: true }
   );
-  res.json({ msg: "Updated" });
+
+  res.json(lead);
 });
 
-// Delete
-router.delete("/:id", auth, async (req, res) => {
+/* DELETE LEAD */
+router.delete("/:id", authMiddleware, async (req, res) => {
   await Lead.findOneAndDelete({
     _id: req.params.id,
-    userId: req.user.userId,
+    userId: req.user.id
   });
-  res.json({ msg: "Deleted" });
+
+  res.json({ success: true });
 });
 
 module.exports = router;
