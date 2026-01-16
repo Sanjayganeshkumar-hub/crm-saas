@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Sales Pipeline CRM</title>
-    <link rel="stylesheet" href="/css/style.css">
+  <title>Sales Pipeline CRM</title>
 </head>
 <body>
 
@@ -10,23 +9,17 @@
 <button onclick="logout()">Logout</button>
 
 <form id="addLeadForm">
-    <input name="companyName" placeholder="Company Name" required>
-    <input name="contactPerson" placeholder="Contact Person" required>
-    <input name="email" placeholder="Email" required>
-    <input name="phone" placeholder="Phone" required>
-    <input name="dealValue" placeholder="Deal Value" required>
-    <button type="submit">Add Lead</button>
+  <input id="company" placeholder="Company Name" required />
+  <input id="contactPerson" placeholder="Contact Person" required />
+  <input id="email" placeholder="Email" required />
+  <input id="phone" placeholder="Phone" required />
+  <input id="value" placeholder="Deal Value" required />
+  <button type="submit">Add Lead</button>
 </form>
 
+<hr />
 <div id="leads"></div>
 
 <script src="/js/dashboard.js"></script>
-<script>
-function logout() {
-    localStorage.removeItem("token");
-    window.location.href = "/login.html";
-}
-</script>
-
 </body>
 </html>
