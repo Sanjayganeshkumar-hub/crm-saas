@@ -1,64 +1,66 @@
+const API_URL = "/api/leads";
 const token = localStorage.getItem("token");
 
 if (!token) {
+  alert("No token found. Please login again.");
   window.location.href = "/login.html";
 }
 
-// PREVENT FORM RELOAD
+// Handle Add Lead
 document.getElementById("addLeadForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+  e.preventDefault(); // 🔥 STOP PAGE RELOAD
 
-  const lead = {
-    company: company.value,
-    contactPerson: contactPerson.value,
-    email: email.value,
-    phone: phone.value,
-    value: value.value
+  const leadData = {
+    companyName: e.target.companyName.value,
+    contactPerson: e.target.contactPerson.value,
+    email: e.target.email.value,
+    phone: e.target.phone.value,
+    dealValue: e.target.dealValue.value
   };
 
-  const res = await fetch("/api/leads", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token
-    },
-    body: JSON.stringify(lead)
-  });
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify(leadData)
+    });
 
-  if (res.ok) {
-    loadLeads();
+    if (!res.ok) throw new Error("Add lead failed");
+
     e.target.reset();
-  } else {
+    loadLeads();
+  } catch (err) {
     alert("Add lead failed");
   }
 });
 
+// Load Leads
 async function loadLeads() {
-  const res = await fetch("/api/leads", {
+  const res = await fetch(API_URL, {
     headers: {
-      Authorization: "Bearer " + token
+      "Authorization": "Bearer " + token
     }
   });
 
-  const data = await res.json();
+  const leads = await res.json();
   const container = document.getElementById("leads");
   container.innerHTML = "";
 
-  data.forEach(l => {
+  leads.forEach(lead => {
     const div = document.createElement("div");
     div.innerHTML = `
-      <h4>${l.company}</h4>
-      <p>${l.contactPerson}</p>
-      <p>₹${l.value}</p>
+      <h4>${lead.companyName}</h4>
+      <p>${lead.contactPerson}</p>
+      <p>${lead.email}</p>
+      <p>${lead.phone}</p>
+      <p>₹${lead.dealValue}</p>
       <hr/>
     `;
     container.appendChild(div);
   });
-}
-
-function logout() {
-  localStorage.removeItem("token");
-  window.location.href = "/login.html";
 }
 
 loadLeads();
