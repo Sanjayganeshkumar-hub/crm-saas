@@ -1,58 +1,92 @@
-<body class="bg-light">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sales Pipeline CRM</title>
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
 
 <!-- HEADER -->
-<div class="top-bar">
-  <h2>Sales Pipeline CRM</h2>
-  <button onclick="logout()" class="logout-btn">Logout</button>
-</div>
+<header class="topbar">
+  <h1>Sales Pipeline CRM</h1>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</header>
 
-<div class="container">
-
-  <!-- STATS -->
-  <div class="stats">
-    <div class="stat-card">
-      <span>Total Deal Amount</span>
-      <h3 id="totalDeal">₹0</h3>
-    </div>
-
-    <div class="stat-card">
-      <span>Total Won</span>
-      <h3 id="totalWon" class="green">₹0</h3>
-    </div>
-
-    <div class="stat-card">
-      <span>Total Loss</span>
-      <h3 id="totalLoss" class="red">₹0</h3>
-    </div>
+<!-- STATS -->
+<section class="stats">
+  <div class="stat-card">
+    <p>Total Deal Amount</p>
+    <h2 id="totalDeal">₹0</h2>
   </div>
 
-  <!-- MAIN -->
-  <div class="main">
+  <div class="stat-card won">
+    <p>Total Won</p>
+    <h2 id="totalWon">₹0</h2>
+  </div>
 
-    <!-- ADD LEAD -->
-    <div class="card add-lead">
-      <h3>Add New Lead</h3>
+  <div class="stat-card lost">
+    <p>Total Loss</p>
+    <h2 id="totalLoss">₹0</h2>
+  </div>
+</section>
 
-      <form id="addLeadForm">
-        <input id="companyName" placeholder="Company Name" required>
-        <input id="contactPerson" placeholder="Contact Person" required>
-        <input id="email" placeholder="Email">
-        <input id="phone" placeholder="Phone">
-        <input id="dealValue" type="number" placeholder="Deal Value (₹)" required>
-        <button type="submit">Add Lead</button>
-      </form>
-    </div>
+<!-- MAIN CONTENT -->
+<section class="main">
 
-    <!-- PIPELINE -->
-    <div class="card pipeline">
-      <h3>Pipeline</h3>
-      <div id="leads" class="pipeline-row">
-        <!-- JS injects lead cards here -->
+  <!-- ADD LEAD -->
+  <div class="add-lead-card">
+    <h3>Add New Lead</h3>
+
+    <form id="addLeadForm">
+      <input id="companyName" placeholder="Company Name" required />
+      <input id="contactPerson" placeholder="Contact Person" required />
+      <input id="email" placeholder="Email" />
+      <input id="phone" placeholder="Phone" />
+      <input id="dealValue" type="number" placeholder="Deal Value (₹)" required />
+      <button type="submit" class="primary-btn">Add Lead</button>
+    </form>
+  </div>
+
+  <!-- PIPELINE -->
+  <div class="pipeline">
+    <div class="pipeline-columns">
+
+      <div class="column">
+        <h4>Lead</h4>
+        <div id="Lead" class="lead-list"></div>
       </div>
-    </div>
 
+      <div class="column">
+        <h4>Contacted</h4>
+        <div id="Contacted" class="lead-list"></div>
+      </div>
+
+      <div class="column">
+        <h4>Qualified</h4>
+        <div id="Qualified" class="lead-list"></div>
+      </div>
+
+      <div class="column">
+        <h4>Proposal</h4>
+        <div id="Proposal" class="lead-list"></div>
+      </div>
+
+      <div class="column">
+        <h4>Won</h4>
+        <div id="Won" class="lead-list"></div>
+      </div>
+
+      <div class="column">
+        <h4>Lost</h4>
+        <div id="Lost" class="lead-list"></div>
+      </div>
+
+    </div>
   </div>
-</div>
+
+</section>
 
 <script src="js/dashboard.js"></script>
 </body>
+</html>
