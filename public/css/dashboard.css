@@ -1,39 +1,75 @@
-.pipeline-container {
-  display: flex;
-  gap: 16px;
+/* GENERAL */
+body {
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+/* METRICS */
+.metric-card {
+  border-radius: 12px;
+  border: none;
+}
+
+.metric-title {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.metric-value {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+/* PIPELINE */
+.pipeline-wrapper {
   overflow-x: auto;
   padding-bottom: 10px;
 }
 
-.pipeline-column {
-  min-width: 260px;
-  background: #f8f9fa;
-  border-radius: 10px;
-  padding: 10px;
+.pipeline-row {
+  display: flex;
+  gap: 16px;
+  min-height: 200px;
 }
 
-.pipeline-column h6 {
-  text-align: center;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
+/* LEAD CARD */
 .lead-card {
   background: #fff;
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  padding: 14px;
+  min-width: 260px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
 }
 
-.lead-card small {
-  display: block;
+.lead-title {
+  font-weight: 700;
+  font-size: 15px;
 }
 
-.lead-card select {
-  margin-top: 6px;
+.lead-sub {
+  font-size: 14px;
+  color: #555;
 }
 
-.lead-card button {
-  margin-top: 6px;
+.lead-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 6px;
+}
+
+.lead-actions select {
+  flex: 1;
+}
+
+.lead-actions button {
+  flex: 1;
+}
+
+/* SCROLLBAR */
+.pipeline-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+.pipeline-wrapper::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 10px;
 }
