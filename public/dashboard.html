@@ -4,52 +4,38 @@
   <meta charset="UTF-8" />
   <title>Sales Pipeline CRM</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- CSS -->
   <link rel="stylesheet" href="css/dashboard.css">
 </head>
 
 <body>
 
-<!-- ================= HEADER ================= -->
 <header>
   <h1>Sales Pipeline CRM</h1>
-
-  <!-- 🔴 REQUIRED ID -->
   <button id="logoutBtn" class="logout-btn">Logout</button>
 </header>
 
 <div class="container">
 
-  <!-- ================= STATS ================= -->
   <div class="stats">
     <div class="stat-card">
       <h4>Total Deal Amount</h4>
-      <!-- 🔴 REQUIRED ID -->
       <span id="totalDeal">₹0</span>
     </div>
-
     <div class="stat-card">
       <h4>Total Won</h4>
-      <!-- 🔴 REQUIRED ID -->
       <span id="totalWon" class="green">₹0</span>
     </div>
-
     <div class="stat-card">
       <h4>Total Loss</h4>
-      <!-- 🔴 REQUIRED ID -->
       <span id="totalLoss" class="red">₹0</span>
     </div>
   </div>
 
-  <!-- ================= MAIN ================= -->
   <div class="main">
 
-    <!-- ADD LEAD -->
     <div class="add-lead">
       <h2>Add New Lead</h2>
 
-      <!-- 🔴 REQUIRED FORM ID -->
       <form id="addLeadForm">
         <input id="companyName" placeholder="Company Name" required />
         <input id="contactPerson" placeholder="Contact Person" required />
@@ -60,55 +46,22 @@
       </form>
     </div>
 
-    <!-- PIPELINE -->
     <div class="pipeline">
       <h2>Pipeline</h2>
 
       <div class="pipeline-columns">
-
-        <div class="pipeline-column">
-          <h3>Lead</h3>
-          <!-- 🔴 REQUIRED -->
-          <div id="lead"></div>
-        </div>
-
-        <div class="pipeline-column">
-          <h3>Contacted</h3>
-          <!-- 🔴 REQUIRED -->
-          <div id="contacted"></div>
-        </div>
-
-        <div class="pipeline-column">
-          <h3>Qualified</h3>
-          <!-- 🔴 REQUIRED -->
-          <div id="qualified"></div>
-        </div>
-
-        <div class="pipeline-column">
-          <h3>Proposal</h3>
-          <!-- 🔴 REQUIRED -->
-          <div id="proposal"></div>
-        </div>
-
-        <div class="pipeline-column">
-          <h3>Won</h3>
-          <!-- 🔴 REQUIRED -->
-          <div id="won"></div>
-        </div>
-
-        <div class="pipeline-column">
-          <h3>Lost</h3>
-          <!-- 🔴 REQUIRED -->
-          <div id="lost"></div>
-        </div>
-
+        <div class="pipeline-column"><h3>Lead</h3><div id="lead"></div></div>
+        <div class="pipeline-column"><h3>Contacted</h3><div id="contacted"></div></div>
+        <div class="pipeline-column"><h3>Qualified</h3><div id="qualified"></div></div>
+        <div class="pipeline-column"><h3>Proposal</h3><div id="proposal"></div></div>
+        <div class="pipeline-column"><h3>Won</h3><div id="won"></div></div>
+        <div class="pipeline-column"><h3>Lost</h3><div id="lost"></div></div>
       </div>
     </div>
 
   </div>
 </div>
 
-<!-- JS (MUST BE LAST) -->
 <script src="js/dashboard.js"></script>
 </body>
 </html>

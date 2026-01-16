@@ -1,74 +1,101 @@
-let leads = [];
+document.addEventListener("DOMContentLoaded", () => {
 
-const totalDealEl = document.getElementById("totalDeal");
-const totalWonEl = document.getElementById("totalWon");
-const totalLossEl = document.getElementById("totalLoss");
+  const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.href = "login.html";
+    return;
+  }
 
-const statuses = ["Lead", "Contacted", "Qualified", "Proposal", "Won", "Lost"];
-
-document.getElementById("logoutBtn").onclick = () => {
-  localStorage.clear();
-  window.location.href = "login.html";
-};
-
-document.getElementById("addLeadBtn").onclick = () => {
-  const lead = {
-    id: Date.now(),
-    company: companyName.value,
-    person: contactPerson.value,
-    email: email.value,
-    phone: phone.value,
-    value: Number(dealValue.value),
-    status: "Lead"
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + token
   };
-  leads.push(lead);
-  render();
-};
 
-function render() {
-  statuses.forEach(s => {
-    const col = document.getElementById(`lead-${s}`);
-    if (col) col.innerHTML = "";
-  });
+  // LOGOUT
+  document.getElementById("logoutBtn").onclick = () => {
+    localStorage.removeItem("token");
+    window.location.href = "login.html";
+  };
 
-  let total = 0, won = 0, lost = 0;
+  // LOAD LEADS
+  async function loadLeads() {
+    const res = await fetch("/api/leads", { headers });
+    const leads = await res.json();
+    renderLeads(leads);
+  }
 
-  leads.forEach(lead => {
-    total += lead.value;
-    if (lead.status === "Won") won += lead.value;
-    if (lead.status === "Lost") lost += lead.value;
+  function renderLeads(leads) {
+    const stages = ["lead", "contacted", "qualified", "proposal", "won", "lost"];
+    stages.forEach(s => document.getElementById(s).innerHTML = "");
 
-    const card = document.createElement("div");
-    card.className = "lead-card";
+    let total = 0, won = 0, loss = 0;
 
-    card.innerHTML = `
-      <h4>${lead.company} — ₹${lead.value}</h4>
-      <p>${lead.person}</p>
-      <p>${lead.email}</p>
-      <p>${lead.phone}</p>
+    leads.forEach(lead => {
+      total += lead.dealValue;
+      if (lead.stage === "Won") won += lead.dealValue;
+      if (lead.stage === "Lost") loss += lead.dealValue;
 
-      <select>
-        ${statuses.map(s => `<option ${s===lead.status?"selected":""}>${s}</option>`).join("")}
-      </select>
+      const card = document.createElement("div");
+      card.className = "lead-card";
 
-      <button>Delete</button>
-    `;
+      card.innerHTML = `
+        <h4>${lead.companyName} — ₹${lead.dealValue}</h4>
+        <p>${lead.contactPerson}</p>
+        <p>${lead.email || ""}</p>
+        <p>${lead.phone || ""}</p>
 
-    card.querySelector("select").onchange = e => {
-      lead.status = e.target.value;
-      render();
-    };
+        <select>
+          ${["Lead","Contacted","Qualified","Proposal","Won","Lost"]
+            .map(s => `<option ${s===lead.stage?"selected":""}>${s}</option>`).join("")}
+        </select>
 
-    card.querySelector("button").onclick = () => {
-      leads = leads.filter(l => l.id !== lead.id);
-      render();
-    };
+        <button>Delete</button>
+      `;
 
-    const column = document.getElementById(`lead-${lead.status}`);
-    if (column) column.appendChild(card);
-  });
+      card.querySelector("select").onchange = async e => {
+        await fetch(`/api/leads/${lead._id}`, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ stage: e.target.value })
+        });
+        loadLeads();
+      };
 
-  totalDealEl.textContent = `₹${total}`;
-  totalWonEl.textContent = `₹${won}`;
-  totalLossEl.textContent = `₹${lost}`;
-}
+      card.querySelector("button").onclick = async () => {
+        await fetch(`/api/leads/${lead._id}`, {
+          method: "DELETE",
+          headers
+        });
+        loadLeads();
+      };
+
+      document.getElementById(lead.stage.toLowerCase()).appendChild(card);
+    });
+
+    document.getElementById("totalDeal").innerText = `₹${total}`;
+    document.getElementById("totalWon").innerText = `₹${won}`;
+    document.getElementById("totalLoss").innerText = `₹${loss}`;
+  }
+
+  // ADD LEAD
+  document.getElementById("addLeadForm").onsubmit = async e => {
+    e.preventDefault();
+
+    await fetch("/api/leads", {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        companyName: companyName.value,
+        contactPerson: contactPerson.value,
+        email: email.value,
+        phone: phone.value,
+        dealValue: Number(dealValue.value)
+      })
+    });
+
+    e.target.reset();
+    loadLeads();
+  };
+
+  loadLeads();
+});
