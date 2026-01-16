@@ -3,107 +3,103 @@
 <head>
   <meta charset="UTF-8" />
   <title>Sales Pipeline CRM</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <style>
-    body {
-      background: linear-gradient(180deg, #f8fafc, #eef2f7);
-    }
-  </style>
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/dashboard.css">
 </head>
 
-<body class="text-gray-800">
+<body>
 
-<!-- ================= HEADER ================= -->
-<header class="bg-white px-8 py-4 flex justify-between items-center border-b">
-  <h1 class="text-2xl font-extrabold tracking-tight">
-    Sales Pipeline CRM
-  </h1>
-
-  <button
-    id="logoutBtn"
-    class="bg-red-500 hover:bg-red-600 transition text-white px-6 py-2 rounded-xl shadow-sm font-medium">
-    Logout
-  </button>
+<!-- HEADER -->
+<header class="app-header">
+  <h1>Sales Pipeline CRM</h1>
+  <button class="logout-btn" onclick="logout()">Logout</button>
 </header>
 
-<!-- ================= STATS ================= -->
-<section class="px-8 mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- MAIN -->
+<div class="container">
 
-  <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition">
-    <p class="text-gray-500 text-sm">Total Deal Amount</p>
-    <h2 id="totalDeal" class="text-3xl font-bold mt-2">₹0</h2>
-  </div>
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-card">
+      <h4>Total Deal Amount</h4>
+      <span id="totalDeal">₹0</span>
+    </div>
 
-  <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition">
-    <p class="text-gray-500 text-sm">Total Won</p>
-    <h2 id="totalWon" class="text-3xl font-bold mt-2 text-green-600">₹0</h2>
-  </div>
+    <div class="stat-card">
+      <h4>Total Won</h4>
+      <span id="totalWon" class="green">₹0</span>
+    </div>
 
-  <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition">
-    <p class="text-gray-500 text-sm">Total Loss</p>
-    <h2 id="totalLoss" class="text-3xl font-bold mt-2 text-red-500">₹0</h2>
-  </div>
-
-</section>
-
-<!-- ================= MAIN ================= -->
-<section class="px-8 mt-10 grid grid-cols-1 lg:grid-cols-4 gap-8">
-
-  <!-- ================= ADD LEAD ================= -->
-  <div class="bg-white rounded-2xl shadow-sm p-6">
-    <h2 class="text-lg font-semibold mb-5">Add New Lead</h2>
-
-    <form id="addLeadForm" class="space-y-4">
-
-      <input id="companyName"
-        class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
-        placeholder="Company Name" required />
-
-      <input id="contactPerson"
-        class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
-        placeholder="Contact Person" required />
-
-      <input id="email"
-        class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
-        placeholder="Email" />
-
-      <input id="phone"
-        class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
-        placeholder="Phone" />
-
-      <input id="dealValue"
-        type="number"
-        class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
-        placeholder="Deal Value (₹)" required />
-
-      <button
-        type="submit"
-        class="w-full mt-2 bg-indigo-600 hover:bg-indigo-700 transition text-white py-3 rounded-xl font-semibold shadow">
-        Add Lead
-      </button>
-
-    </form>
-  </div>
-
-  <!-- ================= PIPELINE ================= -->
-  <div class="lg:col-span-3 bg-white rounded-2xl shadow-sm p-6 overflow-x-auto">
-    <h2 class="text-lg font-semibold mb-6">Pipeline</h2>
-
-    <!-- JS injects content here -->
-    <div id="pipeline" class="flex gap-6 min-w-[1200px]">
-      <!-- columns + cards from dashboard.js -->
+    <div class="stat-card">
+      <h4>Total Loss</h4>
+      <span id="totalLoss" class="red">₹0</span>
     </div>
   </div>
 
-</section>
+  <!-- MAIN GRID -->
+  <div class="main">
 
-<!-- ================= FOOTER SPACING ================= -->
-<div class="h-10"></div>
+    <!-- ADD LEAD -->
+    <div class="add-lead">
+      <h2>Add New Lead</h2>
 
+      <form id="addLeadForm">
+        <input id="companyName" placeholder="Company Name" required>
+        <input id="contactPerson" placeholder="Contact Person" required>
+        <input id="email" placeholder="Email">
+        <input id="phone" placeholder="Phone">
+        <input id="dealValue" type="number" placeholder="Deal Value (₹)" required>
+
+        <button type="submit">Add Lead</button>
+      </form>
+    </div>
+
+    <!-- PIPELINE -->
+    <div class="pipeline">
+      <h2>Pipeline</h2>
+
+      <div class="pipeline-columns">
+
+        <div class="pipeline-column" data-stage="Lead">
+          <h3>Lead</h3>
+          <div class="leads-container" id="lead-Leads"></div>
+        </div>
+
+        <div class="pipeline-column" data-stage="Contacted">
+          <h3>Contacted</h3>
+          <div class="leads-container" id="lead-Contacted"></div>
+        </div>
+
+        <div class="pipeline-column" data-stage="Qualified">
+          <h3>Qualified</h3>
+          <div class="leads-container" id="lead-Qualified"></div>
+        </div>
+
+        <div class="pipeline-column" data-stage="Proposal">
+          <h3>Proposal</h3>
+          <div class="leads-container" id="lead-Proposal"></div>
+        </div>
+
+        <div class="pipeline-column" data-stage="Won">
+          <h3>Won</h3>
+          <div class="leads-container" id="lead-Won"></div>
+        </div>
+
+        <div class="pipeline-column" data-stage="Lost">
+          <h3>Lost</h3>
+          <div class="leads-container" id="lead-Lost"></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- JS -->
 <script src="js/dashboard.js"></script>
+
 </body>
 </html>
