@@ -5,45 +5,49 @@ if (!token) {
   window.location.href = "/login.html";
 }
 
-/* LOGOUT */
+/* ---------------- LOGOUT ---------------- */
 function logout() {
   localStorage.removeItem("token");
   window.location.href = "/login.html";
 }
 
-/* LOAD LEADS */
+/* ---------------- LOAD LEADS ---------------- */
 async function loadLeads() {
   const res = await fetch(API, {
     headers: { Authorization: `Bearer ${token}` }
   });
+
   const leads = await res.json();
 
-  ["Lead","Contacted","Qualified","Proposal","Won","Lost"].forEach(
-    s => document.getElementById(s).innerHTML = ""
-  );
-
-  let total = 0, won = 0, lost = 0;
-
-  leads.forEach(lead => {
-    total += lead.dealValue;
-    if (lead.stage === "Won") won += lead.dealValue;
-    if (lead.stage === "Lost") lost += lead.dealValue;
-
-    document.getElementById(lead.stage).appendChild(renderLead(lead));
+  // Clear columns
+  ["Lead","Contacted","Qualified","Proposal","Won","Lost"].forEach(s => {
+    document.getElementById(s).innerHTML = `<h3>${s}</h3>`;
   });
 
-  document.getElementById("totalDeal").innerText = "₹" + total;
-  document.getElementById("totalWon").innerText = "₹" + won;
-  document.getElementById("totalLost").innerText = "₹" + lost;
+  let totalDeal = 0;
+  let totalWon = 0;
+  let totalLost = 0;
+
+  leads.forEach(lead => {
+    totalDeal += lead.dealValue || 0;
+    if (lead.stage === "Won") totalWon += lead.dealValue || 0;
+    if (lead.stage === "Lost") totalLost += lead.dealValue || 0;
+
+    document.getElementById(lead.stage).appendChild(createCard(lead));
+  });
+
+  document.getElementById("totalDeal").innerText = `₹${totalDeal}`;
+  document.getElementById("totalWon").innerText = `₹${totalWon}`;
+  document.getElementById("totalLost").innerText = `₹${totalLost}`;
 }
 
-/* RENDER CARD */
-function renderLead(lead) {
-  const div = document.createElement("div");
-  div.className = "lead-card";
+/* ---------------- CREATE CARD ---------------- */
+function createCard(lead) {
+  const card = document.createElement("div");
+  card.className = "lead-card";
 
-  div.innerHTML = `
-    <h4>${lead.companyName} — ₹${lead.dealValue}</h4>
+  card.innerHTML = `
+    <strong>${lead.companyName} — ₹${lead.dealValue}</strong>
     <p>👤 ${lead.contactPerson}</p>
     <p>📧 ${lead.email || "-"}</p>
     <p>📞 ${lead.phone || "-"}</p>
@@ -59,14 +63,14 @@ function renderLead(lead) {
     </button>
   `;
 
-  return div;
+  return card;
 }
 
-/* ADD LEAD */
+/* ---------------- ADD LEAD ---------------- */
 document.getElementById("addLeadForm").addEventListener("submit", async e => {
   e.preventDefault();
 
-  const body = {
+  const lead = {
     companyName: companyName.value,
     contactPerson: contactPerson.value,
     email: email.value,
@@ -80,16 +84,19 @@ document.getElementById("addLeadForm").addEventListener("submit", async e => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(lead)
   });
 
-  if (!res.ok) return alert("Add lead failed");
+  if (!res.ok) {
+    alert("Add lead failed");
+    return;
+  }
 
   e.target.reset();
   loadLeads();
 });
 
-/* UPDATE STAGE */
+/* ---------------- UPDATE STAGE ---------------- */
 async function updateStage(id, stage) {
   await fetch(`${API}/${id}`, {
     method: "PUT",
@@ -99,10 +106,11 @@ async function updateStage(id, stage) {
     },
     body: JSON.stringify({ stage })
   });
+
   loadLeads();
 }
 
-/* DELETE */
+/* ---------------- DELETE LEAD ---------------- */
 async function deleteLead(id) {
   if (!confirm("Delete this lead?")) return;
 
@@ -110,7 +118,9 @@ async function deleteLead(id) {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` }
   });
+
   loadLeads();
 }
 
+/* ---------------- INIT ---------------- */
 loadLeads();
