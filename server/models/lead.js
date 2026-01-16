@@ -6,8 +6,9 @@ const leadSchema = new mongoose.Schema({
     email: String,
     phone: String,
     dealValue: Number,
-    status: {
+    stage: {
         type: String,
+        enum: ["Lead", "Contacted", "Qualified", "Proposal", "Won", "Lost"],
         default: "Lead"
     },
     user: {

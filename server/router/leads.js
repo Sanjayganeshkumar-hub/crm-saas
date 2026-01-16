@@ -1,49 +1,43 @@
 const express = require("express");
 const router = express.Router();
 const Lead = require("../models/lead");
-const authMiddleware = require("./middleware"); // ✅ REQUIRED
+const authMiddleware = require("./middleware");
 
-// ➕ Add Lead (USER-SPECIFIC)
+/* CREATE LEAD (ONLY FOR LOGGED-IN USER) */
 router.post("/", authMiddleware, async (req, res) => {
     try {
         const lead = new Lead({
-            companyName: req.body.companyName,
-            contactPerson: req.body.contactPerson,
-            email: req.body.email,
-            phone: req.body.phone,
-            dealValue: req.body.dealValue,
-            status: "Lead",
-            user: req.user.id   // 🔐 VERY IMPORTANT
+            ...req.body,
+            user: req.user.userId
         });
-
         await lead.save();
         res.json(lead);
     } catch (err) {
+        console.error(err);
         res.status(500).json({ message: "Add lead failed" });
     }
 });
 
-// 📥 Get ONLY logged-in user's leads
+/* GET USER LEADS */
 router.get("/", authMiddleware, async (req, res) => {
-    const leads = await Lead.find({ user: req.user.id });
+    const leads = await Lead.find({ user: req.user.userId });
     res.json(leads);
 });
 
-// 🔄 Update status
+/* UPDATE STAGE */
 router.put("/:id", authMiddleware, async (req, res) => {
-    const lead = await Lead.findOneAndUpdate(
-        { _id: req.params.id, user: req.user.id },
-        { status: req.body.status },
-        { new: true }
+    await Lead.findOneAndUpdate(
+        { _id: req.params.id, user: req.user.userId },
+        { stage: req.body.stage }
     );
-    res.json(lead);
+    res.json({ success: true });
 });
 
-// ❌ Delete lead
+/* DELETE LEAD */
 router.delete("/:id", authMiddleware, async (req, res) => {
     await Lead.findOneAndDelete({
         _id: req.params.id,
-        user: req.user.id
+        user: req.user.userId
     });
     res.json({ success: true });
 });

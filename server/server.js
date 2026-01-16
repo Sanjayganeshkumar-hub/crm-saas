@@ -1,10 +1,13 @@
 require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
 const { MONGO_URI } = require("./config");
 
 const app = express();
+const leadsRoutes = require("./router/leads");
+app.use("/api/leads", leadsRoutes);
 
 app.use(express.json());
 app.use(express.static("public"));
