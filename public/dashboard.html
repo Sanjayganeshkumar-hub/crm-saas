@@ -3,56 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <title>Sales Pipeline CRM</title>
-  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/style.css" />
 </head>
-
 <body>
 
   <!-- HEADER -->
-  <header class="header">
+  <div class="top-bar">
     <h1>Sales Pipeline CRM</h1>
     <button class="logout-btn" onclick="logout()">Logout</button>
-  </header>
+  </div>
 
   <!-- STATS -->
-  <section class="stats">
+  <div class="stats">
     <div class="card">
-      <p>Total Deal Amount</p>
-      <h2 id="totalDeal">₹0</h2>
+      <h4>Total Deal Amount</h4>
+      <p id="totalDeal">₹0</p>
     </div>
     <div class="card">
-      <p>Total Won</p>
-      <h2 class="green" id="totalWon">₹0</h2>
+      <h4>Total Won</h4>
+      <p id="totalWon" style="color:green">₹0</p>
     </div>
     <div class="card">
-      <p>Total Loss</p>
-      <h2 class="red" id="totalLost">₹0</h2>
+      <h4>Total Loss</h4>
+      <p id="totalLost" style="color:red">₹0</p>
     </div>
-  </section>
+  </div>
 
   <!-- MAIN -->
-  <main class="main">
+  <div class="main">
 
     <!-- ADD LEAD -->
-    <div class="card form-card">
+    <div class="add-lead">
       <h3>Add New Lead</h3>
+
       <form id="addLeadForm">
-        <input id="companyName" placeholder="Company Name" required>
-        <input id="contactPerson" placeholder="Contact Person" required>
-        <input id="email" placeholder="Email" required>
-        <input id="phone" placeholder="Phone" required>
-        <input id="dealValue" placeholder="Deal Value (₹)" required>
+        <input id="companyName" placeholder="Company Name" required />
+        <input id="contactPerson" placeholder="Contact Person" required />
+        <input id="email" placeholder="Email" />
+        <input id="phone" placeholder="Phone" />
+        <input id="dealValue" type="number" placeholder="Deal Value (₹)" required />
         <button type="submit">Add Lead</button>
       </form>
     </div>
 
-    <!-- LEADS -->
-    <div class="card leads-card">
-      <h3>Leads</h3>
-      <div id="leads"></div>
+    <!-- PIPELINE -->
+    <div class="pipeline">
+      <div class="column"><h3>Lead</h3><div id="Lead"></div></div>
+      <div class="column"><h3>Contacted</h3><div id="Contacted"></div></div>
+      <div class="column"><h3>Qualified</h3><div id="Qualified"></div></div>
+      <div class="column"><h3>Proposal</h3><div id="Proposal"></div></div>
+      <div class="column"><h3>Won</h3><div id="Won"></div></div>
+      <div class="column"><h3>Lost</h3><div id="Lost"></div></div>
     </div>
 
-  </main>
+  </div>
 
   <script src="/js/dashboard.js"></script>
 </body>
