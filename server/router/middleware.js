@@ -1,21 +1,20 @@
 const jwt = require("jsonwebtoken");
 
-module.exports = function (req, res, next) {
-  const authHeader = req.headers.authorization;
+module.exports = (req, res, next) => {
+  const auth = req.headers.authorization;
 
-  if (!authHeader) {
-    return res.status(401).json({ msg: "No token provided" });
+  if (!auth || !auth.startsWith("Bearer ")) {
+    return res.status(401).json({ msg: "No token" });
   }
 
-  const token = authHeader.split(" ")[1]; // Bearer <token>
-
   try {
+    const token = auth.split(" ")[1];
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET || "crm_secret_123"
+      process.env.JWT_SECRET || "secret"
     );
 
-    req.user = { userId: decoded.userId };
+    req.userId = decoded.userId;
     next();
   } catch (err) {
     return res.status(401).json({ msg: "Invalid token" });
