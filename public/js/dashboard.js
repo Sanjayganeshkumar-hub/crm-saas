@@ -5,72 +5,61 @@ if (!token) {
   window.location.href = "/login.html";
 }
 
-/* ---------------- LOGOUT ---------------- */
+/* ================= LOGOUT ================= */
 function logout() {
   localStorage.removeItem("token");
   window.location.href = "/login.html";
 }
 
-/* ---------------- LOAD LEADS ---------------- */
+/* ================= LOAD LEADS ================= */
 async function loadLeads() {
   const res = await fetch(API, {
     headers: { Authorization: `Bearer ${token}` }
   });
 
   const leads = await res.json();
+  const leadsDiv = document.getElementById("leads");
 
-  // Clear columns
-  ["Lead","Contacted","Qualified","Proposal","Won","Lost"].forEach(s => {
-    document.getElementById(s).innerHTML = `<h3>${s}</h3>`;
-  });
+  leadsDiv.innerHTML = "";
 
   let totalDeal = 0;
   let totalWon = 0;
-  let totalLost = 0;
+  let totalLoss = 0;
 
   leads.forEach(lead => {
     totalDeal += lead.dealValue || 0;
     if (lead.stage === "Won") totalWon += lead.dealValue || 0;
-    if (lead.stage === "Lost") totalLost += lead.dealValue || 0;
+    if (lead.stage === "Lost") totalLoss += lead.dealValue || 0;
 
-    document.getElementById(lead.stage).appendChild(createCard(lead));
+    const div = document.createElement("div");
+    div.innerHTML = `
+      <h3>${lead.companyName} — ₹${lead.dealValue}</h3>
+      <p>👤 ${lead.contactPerson}</p>
+      <p>📧 ${lead.email || "-"}</p>
+      <p>📞 ${lead.phone || "-"}</p>
+
+      <select onchange="updateStage('${lead._id}', this.value)">
+        ${["Lead","Contacted","Qualified","Proposal","Won","Lost"]
+          .map(s => `<option ${s === lead.stage ? "selected" : ""}>${s}</option>`)
+          .join("")}
+      </select>
+
+      <button onclick="deleteLead('${lead._id}')">Delete</button>
+      <hr />
+    `;
+    leadsDiv.appendChild(div);
   });
 
   document.getElementById("totalDeal").innerText = `₹${totalDeal}`;
   document.getElementById("totalWon").innerText = `₹${totalWon}`;
-  document.getElementById("totalLost").innerText = `₹${totalLost}`;
+  document.getElementById("totalLoss").innerText = `₹${totalLoss}`;
 }
 
-/* ---------------- CREATE CARD ---------------- */
-function createCard(lead) {
-  const card = document.createElement("div");
-  card.className = "lead-card";
-
-  card.innerHTML = `
-    <strong>${lead.companyName} — ₹${lead.dealValue}</strong>
-    <p>👤 ${lead.contactPerson}</p>
-    <p>📧 ${lead.email || "-"}</p>
-    <p>📞 ${lead.phone || "-"}</p>
-
-    <select onchange="updateStage('${lead._id}', this.value)">
-      ${["Lead","Contacted","Qualified","Proposal","Won","Lost"]
-        .map(s => `<option ${s===lead.stage?"selected":""}>${s}</option>`)
-        .join("")}
-    </select>
-
-    <button class="delete-btn" onclick="deleteLead('${lead._id}')">
-      Delete
-    </button>
-  `;
-
-  return card;
-}
-
-/* ---------------- ADD LEAD ---------------- */
+/* ================= ADD LEAD ================= */
 document.getElementById("addLeadForm").addEventListener("submit", async e => {
   e.preventDefault();
 
-  const lead = {
+  const data = {
     companyName: companyName.value,
     contactPerson: contactPerson.value,
     email: email.value,
@@ -84,7 +73,7 @@ document.getElementById("addLeadForm").addEventListener("submit", async e => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`
     },
-    body: JSON.stringify(lead)
+    body: JSON.stringify(data)
   });
 
   if (!res.ok) {
@@ -96,7 +85,7 @@ document.getElementById("addLeadForm").addEventListener("submit", async e => {
   loadLeads();
 });
 
-/* ---------------- UPDATE STAGE ---------------- */
+/* ================= UPDATE STAGE ================= */
 async function updateStage(id, stage) {
   await fetch(`${API}/${id}`, {
     method: "PUT",
@@ -110,7 +99,7 @@ async function updateStage(id, stage) {
   loadLeads();
 }
 
-/* ---------------- DELETE LEAD ---------------- */
+/* ================= DELETE ================= */
 async function deleteLead(id) {
   if (!confirm("Delete this lead?")) return;
 
@@ -122,5 +111,5 @@ async function deleteLead(id) {
   loadLeads();
 }
 
-/* ---------------- INIT ---------------- */
+/* ================= INIT ================= */
 loadLeads();
