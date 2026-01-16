@@ -1,52 +1,44 @@
-/* ================= CHECK LOGIN ================= */
-const token = localStorage.getItem("token");
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("addLeadForm");
+  const token = localStorage.getItem("token");
 
-if (!token) {
-  alert("Login required");
-  window.location.href = "/login.html";
-}
-
-/* ================= ADD LEAD ================= */
-const form = document.getElementById("addLeadForm");
-
-form.addEventListener("submit", async function (e) {
-  e.preventDefault(); // ⛔ STOP PAGE REFRESH
-
-  const lead = {
-    companyName: document.querySelector("input[name='companyName']").value,
-    contactPerson: document.querySelector("input[name='contactPerson']").value,
-    email: document.querySelector("input[name='email']").value,
-    phone: document.querySelector("input[name='phone']").value,
-    dealValue: document.querySelector("input[name='dealValue']").value
-  };
-
-  const res = await fetch("/api/leads", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + token
-    },
-    body: JSON.stringify(lead)
-  });
-
-  if (res.ok) {
-    form.reset();   // ✅ clear form
-    loadLeads();    // ✅ reload leads
-  } else {
-    alert("Add lead failed");
+  if (!token) {
+    alert("Please login again");
+    window.location.href = "/login.html";
+    return;
   }
-});
 
-/* ================= LOAD LEADS ================= */
-async function loadLeads() {
-  const res = await fetch("/api/leads", {
-    headers: {
-      "Authorization": "Bearer " + token
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const data = {
+      companyName: document.getElementById("companyName").value,
+      contactPerson: document.getElementById("contactPerson").value,
+      email: document.getElementById("email").value,
+      phone: document.getElementById("phone").value,
+      dealValue: document.getElementById("dealValue").value,
+    };
+
+    try {
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`   // 🔴 THIS WAS MISSING EARLIER
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        throw new Error("Request failed");
+      }
+
+      alert("Lead added successfully");
+      window.location.reload();
+
+    } catch (err) {
+      console.error(err);
+      alert("Add lead failed");
     }
   });
-
-  const leads = await res.json();
-  console.log("Leads loaded:", leads);
-}
-
-loadLeads();
+});

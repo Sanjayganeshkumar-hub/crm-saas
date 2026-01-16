@@ -4,19 +4,15 @@ const Lead = require("../models/lead");
 const auth = require("./middleware");
 
 /* ADD LEAD */
-router.post("/", auth, async (req, res) => {
-  try {
-    const lead = new Lead({
-      ...req.body,
-      userId: req.user.id
-    });
-
-    await lead.save();
-    res.json(lead);
-  } catch (err) {
-    res.status(500).send("Server error");
-  }
+router.post("/", authMiddleware, async (req, res) => {
+  const lead = new Lead({
+    ...req.body,
+    user: req.user.id
+  });
+  await lead.save();
+  res.json(lead);
 });
+
 
 /* GET USER LEADS */
 router.get("/", auth, async (req, res) => {
