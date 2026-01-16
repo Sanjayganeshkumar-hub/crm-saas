@@ -14,7 +14,9 @@
 <!-- HEADER -->
 <header>
   <h1>Sales Pipeline CRM</h1>
-  <button class="logout-btn" onclick="logout()">Logout</button>
+
+  <!-- 🔴 IMPORTANT: id="logoutBtn" IS REQUIRED -->
+  <button id="logoutBtn" class="logout-btn">Logout</button>
 </header>
 
 <div class="container">
@@ -44,13 +46,13 @@
     <div class="add-lead">
       <h2>Add New Lead</h2>
 
+      <!-- 🔴 REQUIRED ID -->
       <form id="addLeadForm">
         <input id="companyName" placeholder="Company Name" required />
         <input id="contactPerson" placeholder="Contact Person" required />
         <input id="email" placeholder="Email" />
         <input id="phone" placeholder="Phone" />
         <input id="dealValue" type="number" placeholder="Deal Value (₹)" required />
-
         <button type="submit">Add Lead</button>
       </form>
     </div>
@@ -63,31 +65,37 @@
 
         <div class="pipeline-column">
           <h3>Lead</h3>
+          <!-- 🔴 REQUIRED -->
           <div id="lead"></div>
         </div>
 
         <div class="pipeline-column">
           <h3>Contacted</h3>
+          <!-- 🔴 REQUIRED -->
           <div id="contacted"></div>
         </div>
 
         <div class="pipeline-column">
           <h3>Qualified</h3>
+          <!-- 🔴 REQUIRED -->
           <div id="qualified"></div>
         </div>
 
         <div class="pipeline-column">
           <h3>Proposal</h3>
+          <!-- 🔴 REQUIRED -->
           <div id="proposal"></div>
         </div>
 
         <div class="pipeline-column">
           <h3>Won</h3>
+          <!-- 🔴 REQUIRED -->
           <div id="won"></div>
         </div>
 
         <div class="pipeline-column">
           <h3>Lost</h3>
+          <!-- 🔴 REQUIRED -->
           <div id="lost"></div>
         </div>
 
