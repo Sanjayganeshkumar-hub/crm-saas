@@ -4,30 +4,54 @@ const authMiddleware = require("./middleware");
 
 const router = express.Router();
 
-// CREATE LEAD
+/* ================= CREATE LEAD ================= */
 router.post("/", authMiddleware, async (req, res) => {
   try {
     const lead = await Lead.create({
-      companyName: req.body.companyName,
-      contactPerson: req.body.contactPerson,
-      email: req.body.email,
-      phone: req.body.phone,
-      dealValue: req.body.dealValue,
-      stage: "Lead",
-      user: req.user.userId
+      ...req.body,
+      user: req.userId
     });
-
     res.json(lead);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ msg: "Add lead failed" });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// GET USER LEADS
+/* ================= GET USER LEADS ================= */
 router.get("/", authMiddleware, async (req, res) => {
-  const leads = await Lead.find({ user: req.user.userId });
-  res.json(leads);
+  try {
+    const leads = await Lead.find({ user: req.userId }).sort({ createdAt: -1 });
+    res.json(leads);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/* ================= UPDATE STAGE ================= */
+router.put("/:id", authMiddleware, async (req, res) => {
+  try {
+    const lead = await Lead.findOneAndUpdate(
+      { _id: req.params.id, user: req.userId },
+      { stage: req.body.stage },
+      { new: true }
+    );
+    res.json(lead);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/* ================= DELETE LEAD ================= */
+router.delete("/:id", authMiddleware, async (req, res) => {
+  try {
+    await Lead.findOneAndDelete({
+      _id: req.params.id,
+      user: req.userId
+    });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;

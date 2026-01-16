@@ -4,39 +4,103 @@
   <meta charset="UTF-8" />
   <title>Sales Pipeline CRM</title>
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .board { display: flex; gap: 20px; overflow-x: auto; }
+    .column {
+      min-width: 260px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 6px;
+    }
+    .lead-card {
+      border: 1px solid #ddd;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+    }
+    select, button, input {
+      margin-top: 5px;
+      width: 100%;
+    }
+    .stats { display: flex; gap: 40px; margin-bottom: 20px; }
+  </style>
 </head>
 <body>
 
-<h1>Sales Pipeline CRM</h1>
-<button onclick="logout()">Logout</button>
+  <h1>Sales Pipeline CRM</h1>
+  <button onclick="logout()">Logout</button>
 
-<h3>Total Deal Amount</h3>
-<div id="totalDeal">₹0</div>
+  <!-- ===== STATS ===== -->
+  <div class="stats">
+    <div>
+      <h3>Total Deal Amount</h3>
+      <div id="totalDeal">₹0</div>
+    </div>
 
-<h3>Total Won</h3>
-<div id="totalWon">₹0</div>
+    <div>
+      <h3>Total Won</h3>
+      <div id="totalWon">₹0</div>
+    </div>
 
-<h3>Total Loss</h3>
-<div id="totalLoss">₹0</div>
+    <div>
+      <h3>Total Loss</h3>
+      <div id="totalLoss">₹0</div>
+    </div>
+  </div>
 
-<hr />
+  <hr />
 
-<h2>Add New Lead</h2>
+  <!-- ===== ADD LEAD ===== -->
+  <h2>Add New Lead</h2>
 
-<form id="addLeadForm">
-  <input id="companyName" placeholder="Company Name" required />
-  <input id="contactPerson" placeholder="Contact Person" required />
-  <input id="email" placeholder="Email" />
-  <input id="phone" placeholder="Phone" />
-  <input id="dealValue" type="number" placeholder="Deal Value (₹)" required />
-  <button type="submit">Add Lead</button>
-</form>
+  <form id="addLeadForm">
+    <input name="companyName" placeholder="Company Name" required />
+    <input name="contactPerson" placeholder="Contact Person" required />
+    <input name="email" placeholder="Email" />
+    <input name="phone" placeholder="Phone" />
+    <input name="dealValue" type="number" placeholder="Deal Value (₹)" required />
+    <button type="submit">Add Lead</button>
+  </form>
 
-<hr />
+  <hr />
 
-<h2>Leads</h2>
-<div id="leads"></div>
+  <!-- ===== PIPELINE ===== -->
+  <h2>Pipeline</h2>
 
-<script src="js/dashboard.js"></script>
+  <div class="board">
+    <div class="column">
+      <h3>Lead</h3>
+      <div id="lead"></div>
+    </div>
+
+    <div class="column">
+      <h3>Contacted</h3>
+      <div id="contacted"></div>
+    </div>
+
+    <div class="column">
+      <h3>Qualified</h3>
+      <div id="qualified"></div>
+    </div>
+
+    <div class="column">
+      <h3>Proposal</h3>
+      <div id="proposal"></div>
+    </div>
+
+    <div class="column">
+      <h3>Won</h3>
+      <div id="won"></div>
+    </div>
+
+    <div class="column">
+      <h3>Lost</h3>
+      <div id="lost"></div>
+    </div>
+  </div>
+
+  <!-- ===== SCRIPT ===== -->
+  <script src="js/dashboard.js"></script>
 </body>
 </html>
