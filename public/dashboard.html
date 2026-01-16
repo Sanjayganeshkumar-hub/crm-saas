@@ -11,42 +11,45 @@
 
 <body>
 
-<!-- HEADER -->
+<!-- ================= HEADER ================= -->
 <header>
   <h1>Sales Pipeline CRM</h1>
 
-  <!-- 🔴 IMPORTANT: id="logoutBtn" IS REQUIRED -->
+  <!-- 🔴 REQUIRED ID -->
   <button id="logoutBtn" class="logout-btn">Logout</button>
 </header>
 
 <div class="container">
 
-  <!-- STATS -->
+  <!-- ================= STATS ================= -->
   <div class="stats">
     <div class="stat-card">
       <h4>Total Deal Amount</h4>
+      <!-- 🔴 REQUIRED ID -->
       <span id="totalDeal">₹0</span>
     </div>
 
     <div class="stat-card">
       <h4>Total Won</h4>
+      <!-- 🔴 REQUIRED ID -->
       <span id="totalWon" class="green">₹0</span>
     </div>
 
     <div class="stat-card">
       <h4>Total Loss</h4>
+      <!-- 🔴 REQUIRED ID -->
       <span id="totalLoss" class="red">₹0</span>
     </div>
   </div>
 
-  <!-- MAIN -->
+  <!-- ================= MAIN ================= -->
   <div class="main">
 
     <!-- ADD LEAD -->
     <div class="add-lead">
       <h2>Add New Lead</h2>
 
-      <!-- 🔴 REQUIRED ID -->
+      <!-- 🔴 REQUIRED FORM ID -->
       <form id="addLeadForm">
         <input id="companyName" placeholder="Company Name" required />
         <input id="contactPerson" placeholder="Contact Person" required />
@@ -105,7 +108,7 @@
   </div>
 </div>
 
-<!-- JS -->
+<!-- JS (MUST BE LAST) -->
 <script src="js/dashboard.js"></script>
 </body>
 </html>
