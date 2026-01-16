@@ -5,103 +5,97 @@
   <title>Sales Pipeline CRM</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="css/dashboard.css">
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="dashboard.css">
 </head>
 
-<body>
+<body class="bg-[#f5f7fb] text-gray-800">
 
 <!-- HEADER -->
-<header class="app-header">
-  <h1>Sales Pipeline CRM</h1>
-  <button class="logout-btn" onclick="logout()">Logout</button>
+<header class="bg-white shadow px-8 py-4 flex justify-between items-center">
+  <h1 class="text-2xl font-bold">Sales Pipeline CRM</h1>
+  <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg">
+    Logout
+  </button>
 </header>
 
+<!-- STATS -->
+<section class="px-8 mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class="stat-card">
+    <p>Total Deal Amount</p>
+    <h2 id="totalDeal">₹0</h2>
+  </div>
+
+  <div class="stat-card">
+    <p>Total Won</p>
+    <h2 id="totalWon" class="text-green-600">₹0</h2>
+  </div>
+
+  <div class="stat-card">
+    <p>Total Loss</p>
+    <h2 id="totalLoss" class="text-red-500">₹0</h2>
+  </div>
+</section>
+
 <!-- MAIN -->
-<div class="container">
+<section class="px-8 mt-10 grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-8">
 
-  <!-- STATS -->
-  <div class="stats">
-   <div class="stat-card">
-     <h4>Total Deal Amount</h4>
-     <span id="totalDeal">₹0</span>
-   </div>
+  <!-- ADD LEAD -->
+  <div class="add-lead">
+    <h2>Add New Lead</h2>
 
-   <div class="stat-card">
-     <h4>Total Won</h4>
-     <span id="totalWon" class="green">₹0</span>
-   </div>
+    <input id="companyName" placeholder="Company Name">
+    <input id="contactPerson" placeholder="Contact Person">
+    <input id="email" placeholder="Email">
+    <input id="phone" placeholder="Phone">
+    <input id="dealValue" placeholder="Deal Value (₹)" type="number">
 
-   <div class="stat-card">
-     <h4>Total Loss</h4>
-     <span id="totalLoss" class="red">₹0</span>
-   </div>
- </div>
+    <button id="addLeadBtn">Add Lead</button>
+  </div>
 
-
-  <!-- MAIN GRID -->
-  <div class="main">
-
-    <!-- ADD LEAD -->
-    <div class="add-lead">
-      <h2>Add New Lead</h2>
-
-      <form id="addLeadForm">
-        <input id="companyName" placeholder="Company Name" required>
-        <input id="contactPerson" placeholder="Contact Person" required>
-        <input id="email" placeholder="Email">
-        <input id="phone" placeholder="Phone">
-        <input id="dealValue" type="number" placeholder="Deal Value (₹)" required>
-
-        <button type="submit">Add Lead</button>
-      </form>
-    </div>
-
-    <!-- PIPELINE -->
+  <!-- PIPELINE -->
   <div class="pipeline">
-     <h2>Pipeline</h2>
+    <h2>Pipeline</h2>
 
     <div class="pipeline-columns">
 
-     <div class="pipeline-column">
-       <h3>Lead</h3>
-       <div class="leads-container" id="lead-Lead"></div>
-     </div>
+      <div class="pipeline-column">
+        <h3>Lead</h3>
+        <div id="lead-Lead" class="leads-container"></div>
+      </div>
 
-     <div class="pipeline-column">
-       <h3>Contacted</h3>
-       <div class="leads-container" id="lead-Contacted"></div>
-     </div>
+      <div class="pipeline-column">
+        <h3>Contacted</h3>
+        <div id="lead-Contacted" class="leads-container"></div>
+      </div>
 
-     <div class="pipeline-column">
-       <h3>Qualified</h3>
-       <div class="leads-container" id="lead-Qualified"></div>
-     </div>
+      <div class="pipeline-column">
+        <h3>Qualified</h3>
+        <div id="lead-Qualified" class="leads-container"></div>
+      </div>
 
-     <div class="pipeline-column">
-       <h3>Proposal</h3>
-       <div class="leads-container" id="lead-Proposal"></div>
-     </div>
+      <div class="pipeline-column">
+        <h3>Proposal</h3>
+        <div id="lead-Proposal" class="leads-container"></div>
+      </div>
 
-     <div class="pipeline-column">
-       <h3>Won</h3>
-       <div class="leads-container" id="lead-Won"></div>
-     </div>
+      <div class="pipeline-column">
+        <h3>Won</h3>
+        <div id="lead-Won" class="leads-container"></div>
+      </div>
 
-     <div class="pipeline-column">
-       <h3>Lost</h3>
-       <div class="leads-container" id="lead-Lost"></div>
-     </div>
+      <div class="pipeline-column">
+        <h3>Lost</h3>
+        <div id="lead-Lost" class="leads-container"></div>
+      </div>
 
     </div>
   </div>
+</section>
 
-
-  </div>
-</div>
-
-<!-- JS -->
-<script src="js/dashboard.js"></script>
-
+<script src="dashboard.js"></script>
 </body>
 </html>

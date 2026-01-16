@@ -1,128 +1,74 @@
-const API = "/api/leads";
-const token = localStorage.getItem("token");
+let leads = [];
 
-// 🔐 Redirect if not logged in
-if (!token) {
-  window.location.href = "/login.html";
-}
+const totalDealEl = document.getElementById("totalDeal");
+const totalWonEl = document.getElementById("totalWon");
+const totalLossEl = document.getElementById("totalLoss");
 
-/* ================= LOGOUT ================= */
-function logout() {
-  localStorage.removeItem("token");
-  window.location.href = "/login.html";
-}
+const statuses = ["Lead", "Contacted", "Qualified", "Proposal", "Won", "Lost"];
 
-/* ================= ADD LEAD ================= */
-document.getElementById("addLeadForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+document.getElementById("logoutBtn").onclick = () => {
+  localStorage.clear();
+  window.location.href = "login.html";
+};
 
-  const data = {
-    companyName: companyName.value,
-    contactPerson: contactPerson.value,
+document.getElementById("addLeadBtn").onclick = () => {
+  const lead = {
+    id: Date.now(),
+    company: companyName.value,
+    person: contactPerson.value,
     email: email.value,
     phone: phone.value,
-    dealValue: Number(dealValue.value),
+    value: Number(dealValue.value),
+    status: "Lead"
   };
+  leads.push(lead);
+  render();
+};
 
-  const res = await fetch(API, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
-    },
-    body: JSON.stringify(data),
+function render() {
+  statuses.forEach(s => {
+    const col = document.getElementById(`lead-${s}`);
+    if (col) col.innerHTML = "";
   });
 
-  if (res.ok) {
-    e.target.reset();
-    loadLeads();
-  } else {
-    alert("Add lead failed");
-  }
-});
-
-/* ================= LOAD LEADS ================= */
-async function loadLeads() {
-  const res = await fetch(API, {
-    headers: {
-      Authorization: "Bearer " + token,
-    },
-  });
-
-  const leads = await res.json();
-  renderLeads(leads);
-}
-
-/* ================= RENDER LEADS ================= */
-function renderLeads(leads) {
-  // Clear pipeline columns
-  document.querySelectorAll("[data-stage]").forEach(col => col.innerHTML = "");
-
-  let totalDeal = 0;
-  let totalWon = 0;
-  let totalLoss = 0;
+  let total = 0, won = 0, lost = 0;
 
   leads.forEach(lead => {
-    totalDeal += lead.dealValue;
-    if (lead.stage === "Won") totalWon += lead.dealValue;
-    if (lead.stage === "Lost") totalLoss += lead.dealValue;
+    total += lead.value;
+    if (lead.status === "Won") won += lead.value;
+    if (lead.status === "Lost") lost += lead.value;
 
     const card = document.createElement("div");
     card.className = "lead-card";
 
     card.innerHTML = `
-      <h4>${lead.companyName} — ₹${lead.dealValue}</h4>
-      <p>${lead.contactPerson}</p>
-      <p>${lead.email || "-"}</p>
-      <p>${lead.phone || "-"}</p>
+      <h4>${lead.company} — ₹${lead.value}</h4>
+      <p>${lead.person}</p>
+      <p>${lead.email}</p>
+      <p>${lead.phone}</p>
 
-      <select onchange="updateStage('${lead._id}', this.value)">
-        ${["Lead","Contacted","Qualified","Proposal","Won","Lost"]
-          .map(s => `<option ${s===lead.stage?"selected":""}>${s}</option>`)
-          .join("")}
+      <select>
+        ${statuses.map(s => `<option ${s===lead.status?"selected":""}>${s}</option>`).join("")}
       </select>
 
-      <button onclick="deleteLead('${lead._id}')">Delete</button>
+      <button>Delete</button>
     `;
 
-    document
-      .querySelector(`[data-stage="${lead.stage}"]`)
-      .appendChild(card);
+    card.querySelector("select").onchange = e => {
+      lead.status = e.target.value;
+      render();
+    };
+
+    card.querySelector("button").onclick = () => {
+      leads = leads.filter(l => l.id !== lead.id);
+      render();
+    };
+
+    const column = document.getElementById(`lead-${lead.status}`);
+    if (column) column.appendChild(card);
   });
 
-  // Update totals
-  document.getElementById("totalDealAmount").innerText = "₹" + totalDeal;
-  document.getElementById("totalWonAmount").innerText = "₹" + totalWon;
-  document.getElementById("totalLossAmount").innerText = "₹" + totalLoss;
+  totalDealEl.textContent = `₹${total}`;
+  totalWonEl.textContent = `₹${won}`;
+  totalLossEl.textContent = `₹${lost}`;
 }
-
-/* ================= UPDATE STAGE ================= */
-async function updateStage(id, stage) {
-  await fetch(`${API}/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
-    },
-    body: JSON.stringify({ stage }),
-  });
-
-  loadLeads();
-}
-
-/* ================= DELETE LEAD ================= */
-async function deleteLead(id) {
-  if (!confirm("Delete this lead?")) return;
-
-  await fetch(`${API}/${id}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: "Bearer " + token,
-    },
-  });
-
-  loadLeads();
-}
-
-/* ================= INIT ================= */
-loadLeads();
