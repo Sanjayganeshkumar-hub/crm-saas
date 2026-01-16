@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
   <title>Sales Pipeline CRM</title>
-  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
 
 <h1>Sales Pipeline CRM</h1>
-<button id="logoutBtn">Logout</button>
+<button onclick="logout()">Logout</button>
 
 <h3>Total Deal Amount</h3>
 <div id="totalDeal">₹0</div>
@@ -19,41 +18,23 @@
 <h3>Total Loss</h3>
 <div id="totalLoss">₹0</div>
 
-<hr />
+<hr>
 
 <h2>Add New Lead</h2>
-
 <form id="addLeadForm">
-  <input id="companyName" placeholder="Company Name" required />
-  <input id="contactPerson" placeholder="Contact Person" required />
-  <input id="email" placeholder="Email" />
-  <input id="phone" placeholder="Phone" />
-  <input id="dealValue" type="number" placeholder="Deal Value (₹)" required />
-  <button type="submit">Add Lead</button>
+  <input id="companyName" placeholder="Company Name" required>
+  <input id="contactPerson" placeholder="Contact Person" required>
+  <input id="email" placeholder="Email">
+  <input id="phone" placeholder="Phone">
+  <input id="dealValue" type="number" placeholder="Deal Value" required>
+  <button>Add Lead</button>
 </form>
 
-<hr />
+<hr>
 
-<h2>Pipeline</h2>
+<h2>Leads</h2>
+<div id="leads"></div>
 
-<h3>Lead</h3>
-<div id="lead"></div>
-
-<h3>Contacted</h3>
-<div id="contacted"></div>
-
-<h3>Qualified</h3>
-<div id="qualified"></div>
-
-<h3>Proposal</h3>
-<div id="proposal"></div>
-
-<h3>Won</h3>
-<div id="won"></div>
-
-<h3>Lost</h3>
-<div id="lost"></div>
-
-<script src="/js/dashboard.js"></script>
+<script src="js/dashboard.js"></script>
 </body>
 </html>
