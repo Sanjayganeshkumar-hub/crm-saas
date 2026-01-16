@@ -1,41 +1,51 @@
 const express = require("express");
 const router = express.Router();
 const Lead = require("../models/lead");
-const auth = require("./middleware");
+const authMiddleware = require("./middleware"); // ✅ REQUIRED
 
-/* ADD LEAD */
+// ➕ Add Lead (USER-SPECIFIC)
 router.post("/", authMiddleware, async (req, res) => {
-  const lead = new Lead({
-    ...req.body,
-    user: req.user.id
-  });
-  await lead.save();
-  res.json(lead);
+    try {
+        const lead = new Lead({
+            companyName: req.body.companyName,
+            contactPerson: req.body.contactPerson,
+            email: req.body.email,
+            phone: req.body.phone,
+            dealValue: req.body.dealValue,
+            status: "Lead",
+            user: req.user.id   // 🔐 VERY IMPORTANT
+        });
+
+        await lead.save();
+        res.json(lead);
+    } catch (err) {
+        res.status(500).json({ message: "Add lead failed" });
+    }
 });
 
-
-/* GET USER LEADS */
-router.get("/", auth, async (req, res) => {
-  const leads = await Lead.find({ userId: req.user.id });
-  res.json(leads);
+// 📥 Get ONLY logged-in user's leads
+router.get("/", authMiddleware, async (req, res) => {
+    const leads = await Lead.find({ user: req.user.id });
+    res.json(leads);
 });
 
-/* UPDATE STAGE */
-router.put("/:id", auth, async (req, res) => {
-  await Lead.findOneAndUpdate(
-    { _id: req.params.id, userId: req.user.id },
-    { stage: req.body.stage }
-  );
-  res.sendStatus(200);
+// 🔄 Update status
+router.put("/:id", authMiddleware, async (req, res) => {
+    const lead = await Lead.findOneAndUpdate(
+        { _id: req.params.id, user: req.user.id },
+        { status: req.body.status },
+        { new: true }
+    );
+    res.json(lead);
 });
 
-/* DELETE LEAD */
-router.delete("/:id", auth, async (req, res) => {
-  await Lead.findOneAndDelete({
-    _id: req.params.id,
-    userId: req.user.id
-  });
-  res.sendStatus(200);
+// ❌ Delete lead
+router.delete("/:id", authMiddleware, async (req, res) => {
+    await Lead.findOneAndDelete({
+        _id: req.params.id,
+        user: req.user.id
+    });
+    res.json({ success: true });
 });
 
 module.exports = router;
