@@ -3,33 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <title>Sales Pipeline CRM</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
 </head>
+
 <body>
 
-  <h1>Sales Pipeline CRM</h1>
+  <!-- HEADER -->
+  <header class="header">
+    <h1>Sales Pipeline CRM</h1>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </header>
 
-  <!-- LOGOUT -->
-  <button onclick="logout()">Logout</button>
+  <!-- STATS -->
+  <section class="stats">
+    <div class="card">
+      <p>Total Deal Amount</p>
+      <h2 id="totalDeal">₹0</h2>
+    </div>
+    <div class="card">
+      <p>Total Won</p>
+      <h2 class="green" id="totalWon">₹0</h2>
+    </div>
+    <div class="card">
+      <p>Total Loss</p>
+      <h2 class="red" id="totalLost">₹0</h2>
+    </div>
+  </section>
 
-  <hr />
+  <!-- MAIN -->
+  <main class="main">
 
-  <!-- ADD LEAD FORM -->
-  <form id="addLeadForm">
-    <input type="text" id="companyName" placeholder="Company Name" required />
-    <input type="text" id="contactPerson" placeholder="Contact Person" required />
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="text" id="phone" placeholder="Phone" required />
-    <input type="number" id="dealValue" placeholder="Deal Value" required />
-    <button type="submit">Add Lead</button>
-  </form>
+    <!-- ADD LEAD -->
+    <div class="card form-card">
+      <h3>Add New Lead</h3>
+      <form id="addLeadForm">
+        <input id="companyName" placeholder="Company Name" required>
+        <input id="contactPerson" placeholder="Contact Person" required>
+        <input id="email" placeholder="Email" required>
+        <input id="phone" placeholder="Phone" required>
+        <input id="dealValue" placeholder="Deal Value (₹)" required>
+        <button type="submit">Add Lead</button>
+      </form>
+    </div>
 
-  <hr />
+    <!-- LEADS -->
+    <div class="card leads-card">
+      <h3>Leads</h3>
+      <div id="leads"></div>
+    </div>
 
-  <!-- LEADS LIST -->
-  <div id="leads"></div>
+  </main>
 
-  <!-- IMPORTANT: JS MUST BE AT BOTTOM -->
   <script src="/js/dashboard.js"></script>
-
 </body>
 </html>

@@ -1,61 +1,54 @@
-// =======================
-// AUTH CHECK
-// =======================
 const token = localStorage.getItem("token");
 
 if (!token) {
-  alert("Please login first");
   window.location.href = "/login.html";
 }
 
-// =======================
-// LOGOUT (FIXED)
-// =======================
 function logout() {
   localStorage.removeItem("token");
   window.location.href = "/login.html";
 }
 
-// =======================
-// LOAD LEADS
-// =======================
 async function loadLeads() {
   const res = await fetch("/api/leads", {
-    headers: {
-      Authorization: "Bearer " + token
-    }
+    headers: { Authorization: "Bearer " + token }
   });
 
   const data = await res.json();
+
   const leadsDiv = document.getElementById("leads");
   leadsDiv.innerHTML = "";
 
-  data.forEach(lead => {
+  let total = 0, won = 0, lost = 0;
+
+  data.forEach(l => {
+    total += l.dealValue || 0;
+    if (l.stage === "Won") won += l.dealValue || 0;
+    if (l.stage === "Lost") lost += l.dealValue || 0;
+
     const div = document.createElement("div");
     div.innerHTML = `
-      <p><b>${lead.companyName}</b></p>
-      <p>${lead.contactPerson}</p>
-      <p>${lead.email}</p>
-      <p>${lead.phone}</p>
-      <p>₹${lead.dealValue}</p>
-      <hr/>
+      <b>${l.companyName}</b><br>
+      ${l.contactPerson}<br>
+      ₹${l.dealValue}
     `;
     leadsDiv.appendChild(div);
   });
+
+  document.getElementById("totalDeal").innerText = "₹" + total;
+  document.getElementById("totalWon").innerText = "₹" + won;
+  document.getElementById("totalLost").innerText = "₹" + lost;
 }
 
-// =======================
-// ADD LEAD
-// =======================
-document.getElementById("addLeadForm").addEventListener("submit", async (e) => {
+document.getElementById("addLeadForm").addEventListener("submit", async e => {
   e.preventDefault();
 
   const body = {
-    companyName: document.getElementById("companyName").value,
-    contactPerson: document.getElementById("contactPerson").value,
-    email: document.getElementById("email").value,
-    phone: document.getElementById("phone").value,
-    dealValue: document.getElementById("dealValue").value
+    companyName: companyName.value,
+    contactPerson: contactPerson.value,
+    email: email.value,
+    phone: phone.value,
+    dealValue: dealValue.value
   };
 
   const res = await fetch("/api/leads", {
@@ -68,14 +61,11 @@ document.getElementById("addLeadForm").addEventListener("submit", async (e) => {
   });
 
   if (res.ok) {
-    document.getElementById("addLeadForm").reset();
+    e.target.reset();
     loadLeads();
   } else {
     alert("Add lead failed");
   }
 });
 
-// =======================
-// INITIAL LOAD
-// =======================
 loadLeads();
