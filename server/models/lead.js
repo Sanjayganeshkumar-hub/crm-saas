@@ -5,7 +5,7 @@ const leadSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
     },
     companyName: String,
     contactPerson: String,
@@ -15,8 +15,8 @@ const leadSchema = new mongoose.Schema(
     stage: {
       type: String,
       enum: ["Lead", "Contacted", "Qualified", "Proposal", "Won", "Lost"],
-      default: "Lead"
-    }
+      default: "Lead",
+    },
   },
   { timestamps: true }
 );
