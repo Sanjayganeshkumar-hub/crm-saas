@@ -3,257 +3,222 @@
 <head>
   <meta charset="UTF-8" />
   <title>Sales Pipeline CRM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f7fb;
+      font-family: "Segoe UI", sans-serif;
+      background: #f6f7fb;
     }
 
     header {
-      background: #fff;
-      padding: 16px 24px;
+      background: #ffffff;
+      padding: 20px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #ddd;
     }
 
-    header h2 {
+    header h1 {
       margin: 0;
     }
 
     .logout {
-      background: #ef4444;
+      background: #e53935;
       color: white;
       border: none;
       padding: 10px 18px;
       border-radius: 8px;
       cursor: pointer;
+      font-size: 15px;
+    }
+
+    .container {
+      padding: 30px;
     }
 
     .stats {
       display: flex;
       gap: 20px;
-      padding: 20px;
+      margin-bottom: 30px;
     }
 
     .stat {
       background: white;
       flex: 1;
       padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      border-radius: 14px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
     }
 
-    .container {
+    .stat h3 {
+      margin: 0 0 10px;
+      color: #666;
+    }
+
+    .stat p {
+      font-size: 22px;
+      margin: 0;
+      font-weight: bold;
+    }
+
+    .layout {
       display: flex;
-      gap: 20px;
-      padding: 20px;
+      gap: 25px;
     }
 
-    .form-box {
-      width: 320px;
+    .card {
       background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
     }
 
-    .form-box input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      border: 1px solid #ddd;
+    .add-lead {
+      width: 320px;
     }
 
-    .form-box button {
+    .add-lead h2 {
+      margin-top: 0;
+    }
+
+    .add-lead input {
       width: 100%;
       padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    .add-lead button {
+      width: 100%;
+      padding: 12px;
+      border: none;
       background: #4f46e5;
       color: white;
-      border: none;
-      border-radius: 8px;
+      font-size: 15px;
+      border-radius: 10px;
       cursor: pointer;
     }
 
     .pipeline {
-      flex: 1;
       display: flex;
-      gap: 16px;
+      gap: 20px;
       overflow-x: auto;
+      flex: 1;
     }
 
     .column {
       min-width: 260px;
-      background: white;
-      padding: 12px;
-      border-radius: 12px;
-    }
-
-    .column h4 {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-
-    .card {
+      background: #fafafa;
+      border-radius: 14px;
+      padding: 15px;
       border: 1px solid #eee;
-      border-radius: 10px;
-      padding: 10px;
-      margin-bottom: 10px;
     }
 
-    .card select {
-      width: 100%;
-      margin-top: 6px;
-      padding: 6px;
-    }
-
-    .delete {
-      width: 100%;
-      margin-top: 8px;
-      padding: 8px;
-      background: #dc2626;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
+    .column h3 {
+      text-align: center;
+      margin-top: 0;
+      color: #555;
     }
   </style>
 </head>
+
 <body>
 
-<header>
-  <h2>Sales Pipeline CRM</h2>
-  <button class="logout" onclick="logout()">Logout</button>
-</header>
+  <!-- HEADER -->
+  <header>
+    <h1>Sales Pipeline CRM</h1>
+    <button class="logout" onclick="logout()">Logout</button>
+  </header>
 
-<div class="stats">
-  <div class="stat">
-    <b>Total Deal Amount</b>
-    <h3 id="totalDeal">₹0</h3>
-  </div>
-  <div class="stat">
-    <b>Total Won</b>
-    <h3 id="totalWon" style="color:green">₹0</h3>
-  </div>
-  <div class="stat">
-    <b>Total Loss</b>
-    <h3 id="totalLost" style="color:red">₹0</h3>
-  </div>
-</div>
+  <div class="container">
 
-<div class="container">
-  <div class="form-box">
-    <h3>Add New Lead</h3>
-    <input id="company" placeholder="Company Name" />
-    <input id="person" placeholder="Contact Person" />
-    <input id="email" placeholder="Email" />
-    <input id="phone" placeholder="Phone" />
-    <input id="value" placeholder="Deal Value (₹)" />
-    <button onclick="addLead()">Add Lead</button>
-  </div>
-
-  <div class="pipeline" id="pipeline"></div>
-</div>
-
-<script>
-const token = localStorage.getItem("token");
-if (!token) location.href = "/login.html";
-
-const stages = ["Lead", "Contacted", "Qualified", "Proposal", "Won", "Lost"];
-
-function logout() {
-  localStorage.removeItem("token");
-  location.href = "/login.html";
-}
-
-async function loadLeads() {
-  const res = await fetch("/api/leads", {
-    headers: { Authorization: "Bearer " + token }
-  });
-  const leads = await res.json();
-
-  let total = 0, won = 0, lost = 0;
-
-  document.getElementById("pipeline").innerHTML = "";
-  stages.forEach(stage => {
-    document.getElementById("pipeline").innerHTML += `
-      <div class="column" id="${stage}">
-        <h4>${stage}</h4>
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat">
+        <h3>Total Deal Amount</h3>
+        <p id="totalDeal">₹0</p>
       </div>
-    `;
-  });
-
-  leads.forEach(l => {
-    total += l.dealValue || 0;
-    if (l.stage === "Won") won += l.dealValue || 0;
-    if (l.stage === "Lost") lost += l.dealValue || 0;
-
-    document.getElementById(l.stage).innerHTML += `
-      <div class="card">
-        <b>${l.companyName}</b><br>
-        ₹${l.dealValue}<br>
-        ${l.contactPerson}<br>
-        ${l.email}<br>
-        ${l.phone}
-        <select onchange="updateStage('${l._id}', this.value)">
-          ${stages.map(s =>
-            `<option ${s === l.stage ? "selected" : ""}>${s}</option>`
-          ).join("")}
-        </select>
-        <button class="delete" onclick="deleteLead('${l._id}')">Delete</button>
+      <div class="stat">
+        <h3>Total Won</h3>
+        <p id="totalWon" style="color: green;">₹0</p>
       </div>
-    `;
-  });
+      <div class="stat">
+        <h3>Total Loss</h3>
+        <p id="totalLoss" style="color: red;">₹0</p>
+      </div>
+    </div>
 
-  document.getElementById("totalDeal").innerText = "₹" + total;
-  document.getElementById("totalWon").innerText = "₹" + won;
-  document.getElementById("totalLost").innerText = "₹" + lost;
-}
+    <!-- MAIN -->
+    <div class="layout">
 
-async function addLead() {
-  await fetch("/api/leads", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token
-    },
-    body: JSON.stringify({
-      companyName: company.value,
-      contactPerson: person.value,
-      email: email.value,
-      phone: phone.value,
-      dealValue: Number(value.value)
-    })
-  });
+      <!-- ✅ ADD LEAD FORM (THIS WAS MISSING BEFORE) -->
+      <div class="card add-lead">
+        <h2>Add New Lead</h2>
 
-  company.value = person.value = email.value = phone.value = value.value = "";
-  loadLeads();
-}
+        <!-- 🔴 THIS IS THE IMPORTANT PART -->
+        <form id="addLeadForm">
 
-async function updateStage(id, stage) {
-  await fetch("/api/leads/" + id, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token
-    },
-    body: JSON.stringify({ stage })
-  });
-  loadLeads();
-}
+          <input type="text" name="companyName" placeholder="Company Name" required />
+          <input type="text" name="contactPerson" placeholder="Contact Person" required />
+          <input type="email" name="email" placeholder="Email" required />
+          <input type="text" name="phone" placeholder="Phone" required />
+          <input type="number" name="dealValue" placeholder="Deal Value (₹)" required />
 
-async function deleteLead(id) {
-  await fetch("/api/leads/" + id, {
-    method: "DELETE",
-    headers: { Authorization: "Bearer " + token }
-  });
-  loadLeads();
-}
+          <button type="submit">Add Lead</button>
+        </form>
+      </div>
 
-loadLeads();
-</script>
+      <!-- PIPELINE -->
+      <div class="pipeline">
+
+        <div class="column">
+          <h3>Lead</h3>
+          <div id="lead"></div>
+        </div>
+
+        <div class="column">
+          <h3>Contacted</h3>
+          <div id="contacted"></div>
+        </div>
+
+        <div class="column">
+          <h3>Qualified</h3>
+          <div id="qualified"></div>
+        </div>
+
+        <div class="column">
+          <h3>Proposal</h3>
+          <div id="proposal"></div>
+        </div>
+
+        <div class="column">
+          <h3>Won</h3>
+          <div id="won"></div>
+        </div>
+
+        <div class="column">
+          <h3>Lost</h3>
+          <div id="lost"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD LOGIC -->
+  <script src="/js/dashboard.js"></script>
+
+  <script>
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "/login.html";
+    }
+  </script>
+
 </body>
 </html>

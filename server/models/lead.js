@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const leadSchema = new mongoose.Schema({
+const LeadSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -15,7 +15,11 @@ const leadSchema = new mongoose.Schema({
     type: String,
     enum: ["Lead", "Contacted", "Qualified", "Proposal", "Won", "Lost"],
     default: "Lead"
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
 });
 
-module.exports = mongoose.model("Lead", leadSchema);
+module.exports = mongoose.model("Lead", LeadSchema);
