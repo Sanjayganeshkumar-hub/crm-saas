@@ -1,66 +1,81 @@
-const API_URL = "/api/leads";
+// =======================
+// AUTH CHECK
+// =======================
 const token = localStorage.getItem("token");
 
 if (!token) {
-  alert("No token found. Please login again.");
+  alert("Please login first");
   window.location.href = "/login.html";
 }
 
-// Handle Add Lead
-document.getElementById("addLeadForm").addEventListener("submit", async (e) => {
-  e.preventDefault(); // 🔥 STOP PAGE RELOAD
+// =======================
+// LOGOUT (FIXED)
+// =======================
+function logout() {
+  localStorage.removeItem("token");
+  window.location.href = "/login.html";
+}
 
-  const leadData = {
-    companyName: e.target.companyName.value,
-    contactPerson: e.target.contactPerson.value,
-    email: e.target.email.value,
-    phone: e.target.phone.value,
-    dealValue: e.target.dealValue.value
-  };
-
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token
-      },
-      body: JSON.stringify(leadData)
-    });
-
-    if (!res.ok) throw new Error("Add lead failed");
-
-    e.target.reset();
-    loadLeads();
-  } catch (err) {
-    alert("Add lead failed");
-  }
-});
-
-// Load Leads
+// =======================
+// LOAD LEADS
+// =======================
 async function loadLeads() {
-  const res = await fetch(API_URL, {
+  const res = await fetch("/api/leads", {
     headers: {
-      "Authorization": "Bearer " + token
+      Authorization: "Bearer " + token
     }
   });
 
-  const leads = await res.json();
-  const container = document.getElementById("leads");
-  container.innerHTML = "";
+  const data = await res.json();
+  const leadsDiv = document.getElementById("leads");
+  leadsDiv.innerHTML = "";
 
-  leads.forEach(lead => {
+  data.forEach(lead => {
     const div = document.createElement("div");
     div.innerHTML = `
-      <h4>${lead.companyName}</h4>
+      <p><b>${lead.companyName}</b></p>
       <p>${lead.contactPerson}</p>
       <p>${lead.email}</p>
       <p>${lead.phone}</p>
       <p>₹${lead.dealValue}</p>
       <hr/>
     `;
-    container.appendChild(div);
+    leadsDiv.appendChild(div);
   });
 }
 
+// =======================
+// ADD LEAD
+// =======================
+document.getElementById("addLeadForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const body = {
+    companyName: document.getElementById("companyName").value,
+    contactPerson: document.getElementById("contactPerson").value,
+    email: document.getElementById("email").value,
+    phone: document.getElementById("phone").value,
+    dealValue: document.getElementById("dealValue").value
+  };
+
+  const res = await fetch("/api/leads", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (res.ok) {
+    document.getElementById("addLeadForm").reset();
+    loadLeads();
+  } else {
+    alert("Add lead failed");
+  }
+});
+
+// =======================
+// INITIAL LOAD
+// =======================
 loadLeads();

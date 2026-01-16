@@ -1,25 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>SANJU CRM</title>
+  <meta charset="UTF-8" />
+  <title>Sales Pipeline CRM</title>
 </head>
 <body>
 
-<h1>Sales Pipeline CRM</h1>
-<button onclick="logout()">Logout</button>
+  <h1>Sales Pipeline CRM</h1>
 
-<form id="addLeadForm">
-  <input name="companyName" placeholder="Company Name" />
-  <input name="contactPerson" placeholder="Contact Person" />
-  <input name="email" placeholder="Email" />
-  <input name="phone" placeholder="Phone" />
-  <input name="dealValue" placeholder="Deal Value" />
-  <button type="submit">Add Lead</button>
-</form>
+  <!-- LOGOUT -->
+  <button onclick="logout()">Logout</button>
 
-<hr />
-<div id="leads"></div>
+  <hr />
 
-<script src="/js/dashboard.js"></script>
+  <!-- ADD LEAD FORM -->
+  <form id="addLeadForm">
+    <input type="text" id="companyName" placeholder="Company Name" required />
+    <input type="text" id="contactPerson" placeholder="Contact Person" required />
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="text" id="phone" placeholder="Phone" required />
+    <input type="number" id="dealValue" placeholder="Deal Value" required />
+    <button type="submit">Add Lead</button>
+  </form>
+
+  <hr />
+
+  <!-- LEADS LIST -->
+  <div id="leads"></div>
+
+  <!-- IMPORTANT: JS MUST BE AT BOTTOM -->
+  <script src="/js/dashboard.js"></script>
+
 </body>
 </html>
